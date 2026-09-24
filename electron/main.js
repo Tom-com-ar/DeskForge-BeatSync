@@ -1,10 +1,12 @@
 const path = require('node:path')
-const { app, BrowserWindow, Menu, Tray, nativeImage } = require('electron')
+const fs = require('node:fs/promises')
+const { app, BrowserWindow, Menu, Tray, nativeImage, dialog, ipcMain } = require('electron')
 
 const DEV_SERVER_URL = 'http://127.0.0.1:5174'
 let mainWindow
 let tray
 let isQuitting = false
+let currentNotePath = null
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -13,10 +15,15 @@ if (!app.requestSingleInstanceLock()) {
   app.on('before-quit', () => { isQuitting = true })
 
   app.whenReady().then(() => {
+    registerNoteHandlers()
     Menu.setApplicationMenu(Menu.buildFromTemplate([
       {
         label: 'Archivo',
         submenu: [
+          { label: 'Nuevo', accelerator: 'CmdOrCtrl+N', click: () => sendNoteCommand('new') },
+          { label: 'Abrir…', accelerator: 'CmdOrCtrl+O', click: () => sendNoteCommand('open') },
+          { label: 'Guardar', accelerator: 'CmdOrCtrl+S', click: () => sendNoteCommand('save') },
+          { type: 'separator' },
           { label: 'Mostrar DeskForge', click: showWindow },
           { type: 'separator' },
           { label: 'Salir', role: 'quit' },
@@ -50,7 +57,7 @@ function createWindow() {
     minWidth: 760,
     minHeight: 520,
     resizable: true,
-    backgroundColor: '#101319',
+    backgroundColor: '#0f172a',
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -67,7 +74,10 @@ function createWindow() {
       mainWindow.hide()
     }
   })
-  mainWindow.on('closed', () => { mainWindow = null })
+  mainWindow.on('closed', () => {
+    mainWindow = null
+    currentNotePath = null
+  })
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
 
   if (app.isPackaged) {
@@ -86,4 +96,48 @@ function showWindow() {
   if (mainWindow.isMinimized()) mainWindow.restore()
   mainWindow.show()
   mainWindow.focus()
+}
+
+function registerNoteHandlers() {
+  ipcMain.handle('notes:new', () => {
+    currentNotePath = null
+    return { ok: true }
+  })
+
+  ipcMain.handle('notes:open', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: 'Abrir nota',
+      properties: ['openFile'],
+      filters: [{ name: 'Archivos de texto', extensions: ['txt', 'md'] }],
+    })
+    if (result.canceled || result.filePaths.length === 0) return { canceled: true }
+
+    const filePath = result.filePaths[0]
+    const content = await fs.readFile(filePath, 'utf8')
+    currentNotePath = filePath
+    return { canceled: false, content, fileName: path.basename(filePath) }
+  })
+
+  ipcMain.handle('notes:save', async (_event, content) => {
+    if (typeof content !== 'string') throw new TypeError('El contenido de la nota debe ser texto.')
+
+    if (!currentNotePath) {
+      const result = await dialog.showSaveDialog(mainWindow, {
+        title: 'Guardar nota',
+        defaultPath: 'nota.txt',
+        filters: [{ name: 'Archivos de texto', extensions: ['txt', 'md'] }],
+      })
+      if (result.canceled || !result.filePath) return { canceled: true }
+      currentNotePath = result.filePath
+    }
+
+    await fs.writeFile(currentNotePath, content, 'utf8')
+    return { canceled: false, fileName: path.basename(currentNotePath) }
+  })
+}
+
+function sendNoteCommand(command) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('notes:command', command)
+  }
 }
