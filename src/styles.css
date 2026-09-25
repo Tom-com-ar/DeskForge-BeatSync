@@ -37,6 +37,18 @@ main h2 { margin: 18px 0 10px; font-size: clamp(30px, 5vw, 42px); font-weight: 6
 .requirement-copy strong { font-size: 12px; font-weight: 600; }
 .requirement-copy span { color: var(--texto-secundario); font-size: 11px; }
 .complete { padding: 6px 9px; border-radius: 20px; background: var(--exito-suave); color: var(--exito); font-size: 10px; }
+.pomodoro { margin-top: 22px; padding: 18px; border: 1px solid var(--borde); border-radius: 12px; background: var(--superficie); }
+.pomodoro-heading { display: flex; align-items: center; gap: 12px; }
+.pomodoro-copy { flex: 1; }
+.pomodoro-copy h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.pomodoro-copy p { margin: 5px 0 0; color: var(--texto-secundario); font-size: 11px; }
+.phase-chip { padding: 6px 9px; border-radius: 20px; background: var(--acento-suave); color: var(--acento); font-size: 10px; }
+.pomodoro-time { margin: 18px 0 14px; color: var(--texto); font: 500 clamp(42px, 8vw, 58px)/1 "Segoe UI", Arial, sans-serif; letter-spacing: -2px; text-align: center; font-variant-numeric: tabular-nums; }
+.pomodoro-progress { height: 5px; overflow: hidden; border-radius: 5px; background: var(--superficie-secundaria); }
+.pomodoro-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--acento); transition: width .2s linear; }
+.pomodoro-status { min-height: 16px; margin: 10px 0 14px; color: var(--texto-secundario); font-size: 10px; text-align: center; }
+.pomodoro-actions { display: flex; justify-content: center; gap: 8px; }
+.pomodoro-actions .button { min-width: 100px; }
 .notepad { margin-top: 30px; padding: 18px; border: 1px solid var(--borde); border-radius: 12px; background: var(--superficie); }
 .notepad-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .notepad-heading h3 { margin: 0; font-size: 15px; font-weight: 600; }
@@ -59,6 +71,8 @@ footer { padding: 18px 0 24px; border-top: 1px solid var(--borde); color: var(--
 }
 
 @media (max-width: 560px) {
+  .pomodoro-heading { flex-wrap: wrap; }
+  .pomodoro-copy { min-width: calc(100% - 70px); }
   .notepad-heading { align-items: flex-start; flex-direction: column; }
   .note-actions { width: 100%; }
   .button { flex: 1; }

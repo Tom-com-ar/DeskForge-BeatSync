@@ -1,6 +1,6 @@
 const path = require('node:path')
 const fs = require('node:fs/promises')
-const { app, BrowserWindow, Menu, Tray, nativeImage, dialog, ipcMain } = require('electron')
+const { app, BrowserWindow, Menu, Tray, nativeImage, dialog, ipcMain, Notification } = require('electron')
 
 const DEV_SERVER_URL = 'http://127.0.0.1:5174'
 let mainWindow
@@ -99,6 +99,24 @@ function showWindow() {
 }
 
 function registerNoteHandlers() {
+  ipcMain.handle('pomodoro:notify', (_event, phase) => {
+    if (phase !== 'focus' && phase !== 'break') return { shown: false }
+
+    const title = phase === 'focus' ? 'Enfoque terminado' : 'Descanso terminado'
+    const body = phase === 'focus'
+      ? 'Terminaste un bloque de 25 minutos. Empezó tu descanso de 5 minutos.'
+      : 'Terminó el descanso. Empezó un nuevo bloque de enfoque de 25 minutos.'
+
+    if (process.platform === 'win32' && tray && !tray.isDestroyed()) {
+      tray.displayBalloon({ title, content: body, iconType: 'info' })
+      return { shown: true }
+    }
+
+    if (!Notification.isSupported()) return { shown: false }
+    new Notification({ title, body }).show()
+    return { shown: true }
+  })
+
   ipcMain.handle('notes:new', () => {
     currentNotePath = null
     return { ok: true }

@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('deskforge', Object.freeze({
   newNote: () => ipcRenderer.invoke('notes:new'),
   openNote: () => ipcRenderer.invoke('notes:open'),
   saveNote: (content) => ipcRenderer.invoke('notes:save', content),
+  notifyPomodoro: (phase) => ipcRenderer.invoke('pomodoro:notify', phase),
   onFileCommand: (callback) => {
     if (typeof callback !== 'function') return () => {}
     const listener = (_event, command) => callback(command)

@@ -32,6 +32,26 @@
           <span class="complete">Activo</span>
         </section>
 
+        <section class="pomodoro" aria-labelledby="pomodoro-title">
+          <div class="pomodoro-heading">
+            <span class="point-id">E3</span>
+            <div class="pomodoro-copy">
+              <h3 id="pomodoro-title">Temporizador Pomodoro</h3>
+              <p>Ciclos de 25 minutos de enfoque y 5 de descanso.</p>
+            </div>
+            <span id="pomodoro-phase" class="phase-chip">Enfoque</span>
+          </div>
+          <div id="pomodoro-time" class="pomodoro-time" role="timer" aria-label="25 minutos restantes">25:00</div>
+          <div id="pomodoro-progress" class="pomodoro-progress" role="progressbar" aria-label="Progreso del bloque" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="pomodoro-progress-fill"></span>
+          </div>
+          <p id="pomodoro-status" class="pomodoro-status" role="status" aria-live="polite">Listo para iniciar un bloque de enfoque.</p>
+          <div class="pomodoro-actions">
+            <button id="pomodoro-toggle" class="button button-primary" type="button">Iniciar</button>
+            <button id="pomodoro-reset" class="button button-secondary" type="button">Reiniciar</button>
+          </div>
+        </section>
+
         <section class="notepad" aria-labelledby="notepad-title">
           <div class="notepad-heading">
             <div>
