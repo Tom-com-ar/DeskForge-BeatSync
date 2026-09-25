@@ -1,18 +1,7 @@
 # DeskForge + BeatSync
 
-Suite de escritorio para productividad y música, construida con Electron y Vite.
+DeskForge + BeatSync es una aplicación de escritorio que reúne herramientas de productividad y música en un solo espacio.
 
-## Punto E1
+Incluye un temporizador Pomodoro, un bloc de notas, un reproductor para música guardada en el equipo y una biblioteca con playlists. El reproductor también ofrece ecualizador, control de volumen y visualización de audio. Además, permite buscar canciones en Spotify.
 
-- Ventana principal redimensionable con menú nativo.
-- Bandeja del sistema para volver a abrir la ventana o salir.
-- La ventana se oculta al cerrarla para que la aplicación siga disponible en la bandeja.
-- `contextIsolation` activado y `nodeIntegration` desactivado.
-
-## Desarrollo
-
-```bash
-npm run dev
-```
-
-La aplicación se cierra desde **Archivo → Salir** o desde el menú contextual de la bandeja.
+La aplicación puede quedar disponible en la bandeja del sistema e incluye temas claro y oscuro. Las notas, playlists y preferencias se guardan en el equipo.
