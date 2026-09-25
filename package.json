@@ -12,5 +12,8 @@
     "electron": "^44.4.5",
     "vite": "^8.3.0",
     "wait-on": "^9.1.0"
+  },
+  "dependencies": {
+    "howler": "^2.2.4"
   }
 }

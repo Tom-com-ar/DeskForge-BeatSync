@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0f172a" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' http://127.0.0.1:5174 ws://127.0.0.1:5174" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self' blob: http://127.0.0.1:5174 ws://127.0.0.1:5174" />
     <title>DeskForge + BeatSync</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
@@ -20,21 +20,14 @@
 
       <main>
         <div class="status"><span></span> Aplicación activa</div>
-        <h2>Todo listo para empezar.</h2>
-        <p class="intro">Vamos a construir tu espacio de trabajo paso a paso.</p>
+        <div class="dashboard-intro">
+          <h2>Tu espacio de trabajo.</h2>
+          <p class="intro">Productividad y música, en un solo lugar.</p>
+        </div>
 
-        <section class="requirement" aria-label="Punto E1 completado">
-          <span class="point-id">E1</span>
-          <div class="requirement-copy">
-            <strong>Ventana principal</strong>
-            <span>Menú nativo y bandeja del sistema</span>
-          </div>
-          <span class="complete">Activo</span>
-        </section>
-
-        <section class="pomodoro" aria-labelledby="pomodoro-title">
+        <div class="bento-grid">
+        <section class="pomodoro bento-card" aria-labelledby="pomodoro-title">
           <div class="pomodoro-heading">
-            <span class="point-id">E3</span>
             <div class="pomodoro-copy">
               <h3 id="pomodoro-title">Temporizador Pomodoro</h3>
               <p>Ciclos de 25 minutos de enfoque y 5 de descanso.</p>
@@ -52,7 +45,75 @@
           </div>
         </section>
 
-        <section class="notepad" aria-labelledby="notepad-title">
+        <section class="music-player bento-card" aria-labelledby="player-title">
+          <div class="player-heading">
+            <div class="player-heading-copy">
+              <h3 id="player-title">Reproductor BeatSync</h3>
+              <p>Reproducción, volumen y orden de pistas.</p>
+            </div>
+          </div>
+          <audio id="native-audio-fallback" preload="metadata" hidden></audio>
+          <div class="track-info">
+            <strong id="track-title">Sin canciones cargadas</strong>
+            <span id="track-position">0 de 0</span>
+          </div>
+          <div class="player-controls">
+            <button id="previous-track" class="button button-secondary player-skip" type="button" aria-label="Pista anterior" disabled>Anterior</button>
+            <button id="play-toggle" class="button button-primary player-play" type="button" disabled>Reproducir</button>
+            <button id="next-track" class="button button-secondary player-skip" type="button" aria-label="Pista siguiente" disabled>Siguiente</button>
+          </div>
+          <div class="seek-row">
+            <span id="playback-current">00:00</span>
+            <input id="playback-progress" type="range" min="0" max="100" step="0.1" value="0" aria-label="Progreso de la canción" disabled />
+            <span id="playback-duration">00:00</span>
+          </div>
+          <div class="player-options">
+            <button id="shuffle-toggle" class="button button-secondary" type="button" aria-pressed="false" disabled>Mezclar: no</button>
+            <button id="repeat-toggle" class="button button-secondary" type="button" aria-pressed="false" disabled>Repetir: no</button>
+            <label class="volume-control" for="volume-level">Volumen <input id="volume-level" type="range" min="0" max="100" value="80" aria-label="Volumen" /></label>
+          </div>
+          <p id="player-status" class="player-status" role="status" aria-live="polite">Elegí una carpeta de música para empezar.</p>
+        </section>
+
+        <section class="music-library bento-card" aria-labelledby="library-title">
+          <div class="library-heading">
+          <div class="library-title-copy">
+              <div>
+                <h3 id="library-title">Biblioteca local</h3>
+                <p>Elegí una carpeta con archivos MP3, OGG o WAV.</p>
+              </div>
+            </div>
+            <button id="choose-folder" class="button button-secondary" type="button">Elegir carpeta</button>
+            <input id="audio-folder" type="file" accept=".mp3,.ogg,.wav,audio/mpeg,audio/ogg,audio/wav" webkitdirectory directory multiple hidden />
+          </div>
+          <div class="library-meta">
+            <span id="library-folder">Ninguna carpeta seleccionada</span>
+            <span id="library-count">0 canciones</span>
+          </div>
+          <div id="track-list" class="track-list" role="list" aria-label="Canciones de la carpeta">
+            <p class="empty-library">Tus canciones aparecerán acá.</p>
+          </div>
+          <p id="library-status" class="library-status" role="status" aria-live="polite">La música queda en tu equipo.</p>
+        </section>
+
+        <section class="visualizer bento-card" aria-labelledby="visualizer-title">
+          <div class="visualizer-heading">
+            <div class="visualizer-title-copy">
+              <div>
+                <h3 id="visualizer-title">Visualizador de audio</h3>
+                <p>Animación en tiempo real del sonido.</p>
+              </div>
+            </div>
+            <div class="visualizer-modes" role="group" aria-label="Tipo de visualización">
+              <button id="bars-mode" class="button button-secondary mode-button is-selected" type="button" aria-pressed="true">Barras</button>
+              <button id="radial-mode" class="button button-secondary mode-button" type="button" aria-pressed="false">Radial</button>
+            </div>
+          </div>
+          <canvas id="audio-visualizer" aria-label="Visualizador de frecuencia o forma de onda"></canvas>
+          <p id="visualizer-status" class="visualizer-status" role="status" aria-live="polite">Reproducí una canción para ver el audio.</p>
+        </section>
+
+        <section class="notepad bento-card" aria-labelledby="notepad-title">
           <div class="notepad-heading">
             <div>
               <h3 id="notepad-title">Bloc de notas</h3>
@@ -70,6 +131,7 @@
           </div>
           <textarea id="note-content" aria-label="Contenido del bloc de notas" placeholder="Escribí tus notas acá..." spellcheck="true"></textarea>
         </section>
+        </div>
       </main>
 
       <footer>La ventana se oculta al cerrarla. Podés volver desde el ícono de la bandeja.</footer>
