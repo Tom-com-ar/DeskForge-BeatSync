@@ -16,6 +16,7 @@
           <h1>DeskForge <span>+</span> BeatSync</h1>
           <p>Suite de productividad</p>
         </div>
+        <button id="theme-toggle" class="button button-secondary theme-toggle" type="button">Tema claro</button>
       </header>
 
       <main>
@@ -43,6 +44,7 @@
             <button id="pomodoro-toggle" class="button button-primary" type="button">Iniciar</button>
             <button id="pomodoro-reset" class="button button-secondary" type="button">Reiniciar</button>
           </div>
+          <p id="pomodoro-shortcut" class="shortcut-hint">Atajo global: Ctrl+Shift+P</p>
         </section>
 
         <section class="music-player bento-card" aria-labelledby="player-title">
@@ -70,9 +72,15 @@
           <div class="player-options">
             <button id="shuffle-toggle" class="button button-secondary" type="button" aria-pressed="false" disabled>Mezclar: no</button>
             <button id="repeat-toggle" class="button button-secondary" type="button" aria-pressed="false" disabled>Repetir: no</button>
-            <label class="volume-control" for="volume-level">Volumen <input id="volume-level" type="range" min="0" max="100" value="80" aria-label="Volumen" /></label>
+            <label class="volume-control" for="volume-level"><span id="volume-label">Volumen del sistema</span><input id="volume-level" type="range" min="0" max="100" value="80" aria-label="Volumen del sistema" disabled /><output id="volume-value">—</output></label>
+          </div>
+          <div class="equalizer" aria-label="Ecualizador">
+            <label class="equalizer-control" for="eq-bass"><span>Bajos</span><input id="eq-bass" type="range" min="-12" max="12" step="1" value="0" /><output id="eq-bass-value">0 dB</output></label>
+            <label class="equalizer-control" for="eq-mid"><span>Medios</span><input id="eq-mid" type="range" min="-12" max="12" step="1" value="0" /><output id="eq-mid-value">0 dB</output></label>
+            <label class="equalizer-control" for="eq-treble"><span>Agudos</span><input id="eq-treble" type="range" min="-12" max="12" step="1" value="0" /><output id="eq-treble-value">0 dB</output></label>
           </div>
           <p id="player-status" class="player-status" role="status" aria-live="polite">Elegí una carpeta de música para empezar.</p>
+          <p id="player-shortcut" class="shortcut-hint">Atajo global: Ctrl+Shift+Space</p>
         </section>
 
         <section class="music-library bento-card" aria-labelledby="library-title">
@@ -111,6 +119,50 @@
           </div>
           <canvas id="audio-visualizer" aria-label="Visualizador de frecuencia o forma de onda"></canvas>
           <p id="visualizer-status" class="visualizer-status" role="status" aria-live="polite">Reproducí una canción para ver el audio.</p>
+        </section>
+
+        <section class="playlists bento-card" aria-labelledby="playlists-title">
+          <div class="feature-heading">
+            <h3 id="playlists-title">Playlists</h3>
+            <p>Arrastrá canciones de la biblioteca y ordenalas a tu gusto.</p>
+          </div>
+          <div class="playlist-create">
+            <input id="playlist-name" type="text" maxlength="50" placeholder="Nombre de la playlist" aria-label="Nombre de la nueva playlist" />
+            <button id="create-playlist" class="button button-primary" type="button">Crear</button>
+          </div>
+          <div id="playlist-list" class="playlist-list" role="list" aria-label="Tus playlists"></div>
+          <section id="active-playlist" class="active-playlist" aria-label="Playlist seleccionada" hidden>
+            <div class="active-playlist-heading">
+              <h4 id="active-playlist-name"></h4>
+              <div>
+                <button id="rename-playlist" class="button button-secondary" type="button">Renombrar</button>
+                <button id="delete-playlist" class="button button-secondary" type="button">Eliminar</button>
+              </div>
+            </div>
+            <div id="playlist-tracks" class="playlist-tracks" role="list" aria-label="Canciones de la playlist"></div>
+          </section>
+          <p id="playlist-status" class="feature-status" role="status" aria-live="polite">Las playlists se guardan en este equipo.</p>
+        </section>
+
+        <section class="spotify bento-card" aria-labelledby="spotify-title">
+          <div class="feature-heading">
+            <h3 id="spotify-title">Buscar en Spotify</h3>
+            <p>Encontrá canciones del catálogo y abrílas en Spotify.</p>
+          </div>
+          <label class="spotify-client-label" for="spotify-client-id">Client ID de tu app</label>
+          <div class="spotify-connect-row">
+            <input id="spotify-client-id" type="text" autocomplete="off" spellcheck="false" placeholder="Pegá el Client ID" />
+            <button id="spotify-connect" class="button button-primary" type="button">Conectar</button>
+            <button id="spotify-disconnect" class="button button-secondary" type="button" hidden>Desconectar</button>
+          </div>
+          <p class="spotify-redirect-help">En Spotify Developer agregá este Redirect URI:</p>
+          <code id="spotify-redirect-uri"></code>
+          <form id="spotify-search-form" class="spotify-search-row">
+            <input id="spotify-query" type="search" maxlength="120" placeholder="Canción o artista" aria-label="Buscar canción o artista en Spotify" disabled />
+            <button id="spotify-search-button" class="button button-secondary" type="submit" disabled>Buscar</button>
+          </form>
+          <div id="spotify-results" class="spotify-results" role="list" aria-label="Resultados de Spotify"></div>
+          <p id="spotify-status" class="feature-status" role="status" aria-live="polite">Conectá Spotify para buscar canciones.</p>
         </section>
 
         <section class="notepad bento-card" aria-labelledby="notepad-title">
